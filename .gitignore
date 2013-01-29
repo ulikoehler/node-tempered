@@ -15,3 +15,5 @@
 build
 .lock-wscript
 tempered.node
+.c9revisions
+.settings
