@@ -66,15 +66,13 @@ static Handle<Value> enumerateDevices(const Arguments& args) {
 }
 
 /**
- * Open a TEMPered device. Call with args[0] == device path
+ * Open a TEMPered device. Call with args[0] == device path or 0-based consecutive device num
  */
 static Handle<Value> openDevice(const Arguments& args) {
 	HandleScope scope;
 	//We need to list the devices again to find the device list ptr
 	// we want to open
-	//Parse the parth argument
-	char* err = NULL;
-	String::AsciiValue pathArg(args[0]);
+	//Parse the parth argumen
 	tempered_device_list* currentDev = tempered_enumerate(&err);
 	tempered_device_list* firstDev = currentDev; //Needed to free later
 	if(currentDev == NULL) {
@@ -84,16 +82,30 @@ static Handle<Value> openDevice(const Arguments& args) {
 		return scope.Close(ret);
 	}
 	//Find the correct device
-	tempered_device_list* deviceToBeOpened = NULL;
-	while(currentDev != NULL) {
-		//Compare the paths
-		if(strcmp(currentDev->path, *pathArg) == 0) {
-			deviceToBeOpened = currentDev;
-			break;
-		}
-		//Move on to the next device
-		currentDev = currentDev->next;
-	}
+    tempered_device_list* deviceToBeOpened = NULL;
+    if(args[0]->IsNumber()) {
+        int i = args[0]->NumberValue();
+        while(i > 0) {
+            if(currentDev->next == NULL) {
+                return ThrowException(String::New("Device can't be found, given device ID is too large"));
+            }
+        	//Move on to the next device
+    		currentDev = currentDev->next;
+            i--;
+        }
+        deviceToBeOpened
+    } else {
+        String::AsciiValue pathArg(args[0]);
+    	while(currentDev != NULL) {
+    		//Compare the paths
+    		if(strcmp(currentDev->path, *pathArg) == 0) {
+    			deviceToBeOpened = currentDev;
+    			break;
+    		}
+    		//Move on to the next device
+    		currentDev = currentDev->next;
+    	}
+    }
 	//Throw an exception if the specified device can't be found
 	if(deviceToBeOpened == NULL) {
 		return ThrowException(Exception::Error(String::New("No such device")));

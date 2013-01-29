@@ -14,7 +14,7 @@ console.log(sensors);
 console.dir("Updating sensor data...")
 tempered.updateSensors(device)
 console.dir("Reading temperature...")
-console.dir(tempered.readTemperature(device))
+console.dir(tempered.readTemperature(device) + " °C")
 console.dir("Closing device...")
 var device = tempered.closeDevice(device)
 console.dir("Exiting...")
