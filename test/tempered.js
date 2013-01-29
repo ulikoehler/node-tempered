@@ -6,6 +6,7 @@ console.dir("");
 console.dir("Initing...")
 console.log(tempered.init());
 console.dir("Listing...")
-console.log(tempered.enumerateDevices());
+var devices = tempered.enumerateDevices()
+console.log();
 console.dir("Exiting...")
 console.log(tempered.exit());

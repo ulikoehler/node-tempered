@@ -7,12 +7,12 @@ using namespace node;
 using namespace v8;
 
 static Handle<Value> initTempered(const Arguments& args) {
-	char* err;
+	char* err = NULL;
 	bool status = tempered_init(&err);
 	//Return the error string or NULL
 	HandleScope scope;
 	if(!status) {
-		Handle<Value> ret = String::New(err);
+		Handle<Value> ret = ThrowException(String::New(err));
 		free(err);
 		return scope.Close(ret);
 	}
@@ -20,12 +20,12 @@ static Handle<Value> initTempered(const Arguments& args) {
 }
 
 static Handle<Value> exitTempered(const Arguments& args) {
-	char* err;
+	char* err = NULL;
 	bool status = tempered_exit(&err);
 	//Return the error string or NULL
 	HandleScope scope;
 	if(!status) {
-		Handle<Value> ret = String::New(err);
+		Handle<Value> ret = ThrowException(String::New(err));
 		free(err);
 		return scope.Close(ret);
 	}
@@ -33,16 +33,16 @@ static Handle<Value> exitTempered(const Arguments& args) {
 }
 
 static Handle<Value> enumerateDevices(const Arguments& args) {
-	char* err;
+	char* err = NULL;
 	tempered_device_list* currentDev = tempered_enumerate(&err);
 	tempered_device_list* firstDev = currentDev;
 	//Handle any error that might have occured
-	/*if(err != NULL && strlen(err) > 0) {
+	if(currentDev == NULL) {
 		HandleScope scope;
-		Handle<Value> ret = String::New(err);
-		//free(err);
+		Handle<Value> ret = ThrowException(String::New(err));
+		free(err);
 		return scope.Close(ret);
-	}*/
+	}
 	//Build a JS object from the devices
 	int i = 0;
 	Local<Array> deviceList = Array::New();
@@ -63,6 +63,45 @@ static Handle<Value> enumerateDevices(const Arguments& args) {
 	tempered_free_device_list(firstDev);
 	HandleScope scope;
 	return scope.Close(deviceList);
+}
+
+/**
+ * Open a TEMPered device. Call with args[0] == device path
+ */
+static Handle<Value> openDevice(const Arguments& args) {
+	HandleScope scope;
+	//We need to list the devices again to find the device list ptr
+	// we want to open
+	//Parse the parth argument
+	char* err = NULL;
+	String::AsciiValue pathArg(args[0]);
+	tempered_device_list* currentDev = tempered_enumerate(&err);
+	tempered_device_list* firstDev = currentDev; //Needed to free later
+	if(currentDev == NULL) {
+		HandleScope scope;
+		Handle<Value> ret = ThrowException(String::New(err));
+		free(err);
+		return scope.Close(ret);
+	}
+	//Find the correct device
+	tempered_device_list* deviceToBeOpened = NULL;
+	while(currentDev != NULL) {
+		//Compare the paths
+		if(strcmp(currentDev->path, *pathArg) == 0) {
+			deviceToBeOpened = currentDev;
+			break;
+		}
+		//Move on to the next device
+		currentDev = currentDev->next;
+	}
+	//Throw an exception if the specified device can't be found
+	if(deviceToBeOpened == NULL) {
+		return ThrowException(Exception::Error("No such device"));
+	}
+	//Free the device list before returning
+	tempered_free_device_list(firstDev);
+	//Return nothing
+	return scope.Close(Undefined());
 }
 
 void init(Handle<Object> target) {
