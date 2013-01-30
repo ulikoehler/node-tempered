@@ -4,7 +4,7 @@
         "sources": ["tempered.cpp"],
 
         "link_settings": {
-            "libraries": ["-ltempered", "-ltempered-util", "-lhidapi-hidraw"]
+            "libraries": ["-ltempered", "-lhidapi-hidraw"]
         }
     }]
 }

@@ -1,4 +1,4 @@
-tempered = require "build/Release/tempered"
+tempered = require "./build/Release/tempered"
 
 temperedInited = false
 
@@ -21,13 +21,13 @@ class TEMPeredDevice
         ###
         tempered.updateSensors(@device)
         return tempered.readTemperature(@device, sensorNum)
-    readTemperature: (sensorNum = 0) =>
+    readHumidity: (sensorNum = 0) =>
         ###
         Read the humidity from the configured device
         @param sensorNum The sensor ID, 0 for devices with only one sensor
         ###
         tempered.updateSensors(@device)
-        return tempered.readTemperature(@device, sensorNum)
+        return tempered.readHumidity(@device, sensorNum)
 
 
 module.exports = {TEMPeredDevice: TEMPeredDevice}

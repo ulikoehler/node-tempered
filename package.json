@@ -5,7 +5,7 @@
     "Temperature",
     "Sensor"
   ],
-  "description": "Bindings",
+  "description": "Node.js bindings for ",
   "homepage": "https://github.com/ulikoehler/node-tempered",
   "version": "0.0.1",
   "main": "tempered.js",
@@ -13,10 +13,9 @@
     "node": ">=0.8.0 <0.9.0"
   },
   "scripts": {
-    "prepublish": "make coffee",
-    "preinstall": "make build",
-    "postinstall": "make pkgclean",
-    "test": "make test"
+    "prepublish": "",
+    "preinstall": "node-gyp configure ; node-gyp build ; coffee -c tempered.coffee",
+    "postinstall": ""
   },
   "repository": {
     "type": "git",
@@ -28,22 +27,9 @@
   "dependencies": {
   },
   "devDependencies": {
-    "coffee-script": "~1.3.0",
-    "mocha": "~1.3.0"
+    "coffee-script": "~1.3.0"
   },
   "contributors": [
-    "Carter Thaxton <carter.thaxton@gmail.com>",
-    "Damon Oehlman <damon.oehlman@gmail.com>",
-    "Gabor Cselle <gabor@google.com>",
-    "Hans Wennborg <hans@chromium.org>",
-    "Michael Phan-Ba <michael@mikepb.com>",
-    "Nathan Landis <my8bird@gmail.com>",
-    "Randall Leeds <randall.leeds@gmail.com>",
-    "Sanjay Ghemawat <sanjay@google.com>",
-    "shinuza <samorigorse@gmail.com>",
-    "Stefan Thomas <justmoon@members.fsf.org>",
-    "Tim Caswell <tim@creationix.com>",
-    "dgrogan@chromium.org",
-    "jorlow@chromium.org"
+    "Uli Köhler <ukoehler@btronik.de>"
   ]
 }

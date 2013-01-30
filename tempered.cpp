@@ -72,7 +72,8 @@ static Handle<Value> openDevice(const Arguments& args) {
 	HandleScope scope;
 	//We need to list the devices again to find the device list ptr
 	// we want to open
-	//Parse the parth argumen
+	//Parse the parth arguments
+    char* err = NULL;
 	tempered_device_list* currentDev = tempered_enumerate(&err);
 	tempered_device_list* firstDev = currentDev; //Needed to free later
 	if(currentDev == NULL) {
@@ -93,7 +94,7 @@ static Handle<Value> openDevice(const Arguments& args) {
     		currentDev = currentDev->next;
             i--;
         }
-        deviceToBeOpened
+        deviceToBeOpened = currentDev;
     } else {
         String::AsciiValue pathArg(args[0]);
     	while(currentDev != NULL) {
