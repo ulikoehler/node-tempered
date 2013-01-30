@@ -27,7 +27,7 @@
   "dependencies": {
   },
   "devDependencies": {
-    "coffee-script": "~1.3.0"
+    "coffee-script": "1.4.0"
   },
   "contributors": [
     "Uli Köhler <ukoehler@btronik.de>"
