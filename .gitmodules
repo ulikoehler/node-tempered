@@ -1,0 +1,6 @@
+[submodule "thirdparty/signal11"]
+	path = thirdparty/signal11
+	url = git://github.com/signal11/hidapi.git
+[submodule "thirdparty/tempered"]
+	path = thirdparty/tempered
+	url = git://github.com/edorfaus/TEMPered.git
